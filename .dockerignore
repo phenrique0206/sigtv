@@ -1,0 +1,5 @@
+.idea/
+*.iml
+target/
+README
+jboss-eap-deploy/war/**

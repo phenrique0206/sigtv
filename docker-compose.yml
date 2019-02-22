@@ -1,0 +1,48 @@
+version: '2'
+services:
+  sigtv-backend:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./jboss-eap-deploy/war:/home/jboss-eap-7.0/jboss-eap-7.0/standalone/deployments
+    user: "root"
+    container_name: sigtv-api
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100k"
+        max-file: "10"
+
+  postgres:
+    image: postgres:9.4
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=sigtv
+      - POSTGRES_PASSWORD=sigtv
+      - POSTGRES_DB=sigtv
+    container_name: sigtv-postgres
+    command: postgres -c log_statement=all
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100k"
+        max-file: "10"
+
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+    environment:
+      - MINIO_ACCESS_KEY=sigtv
+      - MINIO_SECRET_KEY=sigtv_secret_key
+    volumes:
+      - /tmp:/data
+    container_name: sigtv-minio
+    command: server /data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100k"
+        max-file: "10"
